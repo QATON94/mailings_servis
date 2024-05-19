@@ -19,7 +19,6 @@ load_dotenv()
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
-
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/5.0/howto/deployment/checklist/
 
@@ -30,7 +29,6 @@ SECRET_KEY = os.environ.get('SECRET_KEY')
 DEBUG = os.environ.get('DEBUG', False) == 'True'
 
 ALLOWED_HOSTS = []
-
 
 # Application definition
 
@@ -43,6 +41,7 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
 
     'mailings',
+    'users',
 ]
 
 MIDDLEWARE = [
@@ -75,21 +74,19 @@ TEMPLATES = [
 
 WSGI_APPLICATION = 'config.wsgi.application'
 
-
 # Database
 # https://docs.djangoproject.com/en/5.0/ref/settings/#databases
 
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql_psycopg2',
-        'NAME':  os.environ.get('NAME'),
-        'USER':  os.environ.get('USER'),
+        'NAME': os.environ.get('NAME'),
+        'USER': os.environ.get('USER'),
         'PASSWORD': os.environ.get('PASSWORD'),
-        'HOST':  os.environ.get('HOST'),
-        'PORT':  os.environ.get('PORT'),
+        'HOST': os.environ.get('HOST'),
+        'PORT': os.environ.get('PORT'),
     }
 }
-
 
 # Password validation
 # https://docs.djangoproject.com/en/5.0/ref/settings/#auth-password-validators
@@ -109,7 +106,6 @@ AUTH_PASSWORD_VALIDATORS = [
     },
 ]
 
-
 # Internationalization
 # https://docs.djangoproject.com/en/5.0/topics/i18n/
 
@@ -120,7 +116,6 @@ TIME_ZONE = 'UTC'
 USE_I18N = True
 
 USE_TZ = True
-
 
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/5.0/howto/static-files/
@@ -135,24 +130,37 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 MEDIA_URL = '/media/'
 MEDIA_ROOT = BASE_DIR / 'media'
 
-# AUTH_USER_MODEL = 'users.User'
+AUTH_USER_MODEL = 'users.User'
 
-# LOGIN_REDIRECT_URL = '/'
-# LOGOUT_REDIRECT_URL = '/'
+LOGIN_REDIRECT_URL = '/'
+LOGOUT_REDIRECT_URL = '/'
 
+EMAIL_HOST_USER = os.environ.get('EMAIL_HOST_USER')
+EMAIL_HOST_PASSWORD = os.environ.get('EMAIL_HOST_PASSWORD')
+EMAIL_HOST = os.environ.get('EMAIL_HOST')
+EMAIL_PORT = os.environ.get('EMAIL_PORT')
+EMAIL_USE_SSL = os.environ.get('EMAIL_USE_SSL', False) == 'True'
+
+CACHE_ENABLED = os.environ.get('CACHE_ENABLED', False) == 'True'
+
+if CACHE_ENABLED:
+    CACHES = {
+        'default': {
+            'BACKEND': 'django.core.cache.backends.redis.RedisCache',
+            'LOCATION': os.environ.get('REDIS_LOCATION')
+        }
+    }
 #
-# EMAIL_HOST_USER = os.environ.get('EMAIL_HOST_USER')
-# EMAIL_HOST_PASSWORD = os.environ.get('EMAIL_HOST_PASSWORD')
-# EMAIL_HOST = os.environ.get('EMAIL_HOST')
-# EMAIL_PORT = os.environ.get('EMAIL_PORT')
-# EMAIL_USE_SSL = os.environ.get('EMAIL_USE_SSL', False) == 'True'
-#
-# CACHE_ENABLED = os.environ.get('CACHE_ENABLED', False) == 'True'
-
-# if CACHE_ENABLED:
-#     CACHES = {
-#         'default': {
-#             'BACKEND': 'django.core.cache.backends.redis.RedisCache',
-#             'LOCATION': os.environ.get('REDIS_LOCATION')
-#         }
-#     }
+DATETIME_INPUT_FORMATS = "%d/%m/%Y %H:%M"
+DATETIME_FORMAT = "%d/%m/%Y %H:%M"
+# #     [
+# #     "%Y-%m-%d %H:%M:%S",  # '2006-10-25 14:30:59'
+# #     "%Y-%m-%d %H:%M:%S.%f",  # '2006-10-25 14:30:59.000200'
+# #     "%Y-%m-%d %H:%M",  # '2006-10-25 14:30'
+# #     "%d/%m/%Y %H:%M:%S",  # '25/10/2006 14:30:59'
+# #     "%d/%m/%Y %H:%M:%S.%f",  # '25/10/2006 14:30:59.000200'
+# #     "%d/%m/%Y %H:%M",  # '25/10/2006 14:30'
+# #     "%d/%m/%y %H:%M:%S",  # '25/10/06 14:30:59'
+# #     "%d/%m/%y %H:%M:%S.%f",  # '25/10/06 14:30:59.000200'
+# #     "%d/%m/%y %H:%M",  # '25/10/06 14:30'
+# # ]

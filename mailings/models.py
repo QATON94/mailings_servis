@@ -37,14 +37,14 @@ class Reply(models.Model):
 
 
 class Newsletter(models.Model):
-    DAY = 'day'
-    WEEK = 'week'
-    MONTH = 'month'
+    DAY = 'раз в день'
+    WEEK = 'раз в неделю'
+    MONTH = 'раз в месяц'
     PERIOD_TYPE = ((DAY, 'раз в день'), (WEEK, 'раз в неделю'), (MONTH, 'раз в месяц'),)
-    COMPLETED = 'complete'
-    CREATE = 'create'
-    LAUNCH = 'launch'
-    STATUS_TYPE = ((COMPLETED, 'завершено'), (LAUNCH, 'запущено'), (CREATE, 'создано'), )
+    COMPLETED = 'завершено'
+    CREATE = 'создано'
+    LAUNCH = 'запущено'
+    STATUS_TYPE = ((COMPLETED, 'завершено'), (LAUNCH, 'запущено'), (CREATE, 'создано'),)
 
     date_time_start = models.DateTimeField(verbose_name='дата и время первой отправки рассылки')
     date_time_end = models.DateTimeField(verbose_name='дата и время последней отправки рассылки')

@@ -1,0 +1,30 @@
+{% extends 'mailings/index.html' %}
+
+{% block content %}
+    <div class="container">
+        <div class="col-12">
+            <form class="row" method="post">
+                {% if object %}
+                    <h3>Редактирование</h3>
+                {% else %}
+                    <h3>Создание рассылки</h3>
+                {% endif %}
+                <div class="col-6">
+                    <div class="card">
+                        <div class="card-body">
+                            {% csrf_token %}
+                            {{ form.as_p }}
+                            {% if object %}
+                                <button type="submit" class="save btn btn-primary">Сохранить</button>
+                                <a class="btn btn-primary" href="{% url 'mailings:messages_list' %}">Отмена</a>
+                            {% else %}
+                                <button type="submit" class="save btn btn-primary">Создать</button>
+                            {% endif %}
+                        </div>
+                    </div>
+                </div>
+
+            </form>
+        </div>
+    </div>
+{% endblock %}
