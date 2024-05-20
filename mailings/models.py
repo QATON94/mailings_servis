@@ -27,8 +27,14 @@ class Messages(models.Model):
 
 
 class Reply(models.Model):
+    STATUS_CHOICES = [
+        ('success', 'успешно'),
+        ('fail', 'неуспешно'),
+    ]
+
     last_try_datatime = models.DateTimeField(auto_now=True, verbose_name='дата и время последней попытки')
-    status = models.BooleanField(verbose_name='статус попытки')
+    status = models.CharField(max_length=30, choices=STATUS_CHOICES, verbose_name='статус попытки', blank=True,
+                              null=True)
     mail_server_response = models.TextField(verbose_name='ответ почтового сервера', blank=True, null=True)
 
     class Meta:
@@ -47,6 +53,7 @@ class Newsletter(models.Model):
     STATUS_TYPE = ((COMPLETED, 'завершено'), (LAUNCH, 'запущено'), (CREATE, 'создано'),)
 
     date_time_start = models.DateTimeField(verbose_name='дата и время первой отправки рассылки')
+    dispatch_time = models.DateTimeField(blank=True, null=True, verbose_name='время отправки')
     date_time_end = models.DateTimeField(verbose_name='дата и время последней отправки рассылки')
     period = models.CharField(max_length=50, default=DAY, choices=PERIOD_TYPE)
     status = models.CharField(max_length=50, default=CREATE, choices=STATUS_TYPE)
