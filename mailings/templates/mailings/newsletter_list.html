@@ -8,7 +8,6 @@
     <div class="pricing-header px-3 py-3 pt-md-5 pb-md-4 mx-auto text-center">
         <h1 class="display-4">{{ title }}</h1>
     </div>
-
     <div class="container">
         <div class="col-auto">
             <a href="{% url 'mailings:create_newsletter' %}" type="button" class="btn btn-lg btn-block
@@ -41,6 +40,13 @@
                 </div>
 
             {% endfor %}
+{#            {% if perms.mailings.can_view_any_mailings %}#}
+                <form method="get" action="#">
+                    <h1>---------------</h1>
+                    <h1> {{ user.perms.auth.can_disable_mailings }}</h1>
+                    <h1>---------------</h1>
+                </form>
+{#            {% endif %}#}
         </div>
     </div>
 

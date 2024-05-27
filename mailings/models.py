@@ -1,5 +1,7 @@
 from django.db import models
 
+from users.models import User
+
 
 class Client(models.Model):
     email = models.EmailField(verbose_name="email", max_length=100, unique=True)
@@ -7,9 +9,11 @@ class Client(models.Model):
     Firstname = models.CharField(max_length=100, verbose_name="Имя")
     Patronymic = models.CharField(max_length=100, verbose_name="Отчество")
     comment = models.TextField(verbose_name="Коментарий", blank=True, null=True)
+    user = models.ForeignKey(User, on_delete=models.SET_NULL, null=True, blank=True, verbose_name='Пользователь',
+                             related_name='client')
 
     def __str__(self):
-        return f'{self.lastname} {self.Firstname} {self.Patronymic}'
+        return f'{self.email}'
 
     class Meta:
         db_table = 'client'
@@ -20,10 +24,15 @@ class Client(models.Model):
 class Messages(models.Model):
     topic = models.CharField(max_length=150, verbose_name='Тема письма')
     text = models.TextField(verbose_name='Текст письма')
+    user = models.ForeignKey(User, on_delete=models.SET_NULL, null=True, blank=True, verbose_name='Пользователь',
+                              related_name='messages')
 
     class Meta:
         db_table = 'message'
         verbose_name = 'Сообщение для рассылки'
+
+    def __str__(self):
+        return f'{self.topic}'
 
 
 class Reply(models.Model):
@@ -36,6 +45,8 @@ class Reply(models.Model):
     status = models.CharField(max_length=30, choices=STATUS_CHOICES, verbose_name='статус попытки', blank=True,
                               null=True)
     mail_server_response = models.TextField(verbose_name='ответ почтового сервера', blank=True, null=True)
+    user = models.ForeignKey(User, on_delete=models.SET_NULL, null=True, blank=True, verbose_name='Пользователь',
+                              related_name='reply')
 
     class Meta:
         db_table = 'reply'
@@ -60,6 +71,8 @@ class Newsletter(models.Model):
     client = models.ManyToManyField(Client, verbose_name='Клиент')
     message = models.ForeignKey(Messages, verbose_name='Сообщение', on_delete=models.SET_NULL, blank=True, null=True)
     reply = models.ManyToManyField(Reply, verbose_name='Попытка рассылки')
+    user = models.ForeignKey(User, on_delete=models.SET_NULL, null=True, blank=True, verbose_name='Пользователь',
+                             related_name='newsletter')
 
     class Meta:
         db_table = 'newsletter'

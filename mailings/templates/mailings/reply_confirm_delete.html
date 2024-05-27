@@ -1,0 +1,21 @@
+{% extends 'mailings/index.html' %}
+
+{% block content %}
+    <div class="container">
+        <div class="col-12">
+                <h3>Удалить лог</h3>
+            <form class="row" method="post">
+                <div class="card">
+                    <div class="card-body">
+                        {% csrf_token %}
+                        <h4>Вы действительно хотите удалить?</h4>
+                        <button type="submit" class="btn btn-danger">Удалить</button>
+                        <a href="{% url 'mailings:reply_list' %}" class="btn btn-primary">Отмена</a>
+                    </div>
+
+                </div>
+
+            </form>
+        </div>
+    </div>
+{% endblock %}

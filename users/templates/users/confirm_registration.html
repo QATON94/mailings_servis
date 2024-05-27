@@ -1,0 +1,23 @@
+{% extends 'mailings/index.html' %}
+
+{% block content %}
+    <h1 class="fw-fight">{{ title }}</h1>
+    <div class="container">
+        <div class="col-12">
+            <form class="row" method="post">
+                <div class="col-auto">
+                    <div class="card">
+                        {% csrf_token %}
+                        <label for="verification_code" class="form-label">Код подтверждения</label>
+                        <input type="verification_code" name="verification_code" class="form-control"
+                               aria-describedby="passwordHelpBlock">
+                        <br>
+                        <button type="submit" class="btn btn-primary">
+                            Подтвердить
+                        </button>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+{% endblock %}

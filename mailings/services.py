@@ -51,8 +51,8 @@ def start_mailing():
                 else:
                     newsletter.status = 'завершено'
 
-            status = 'success'
-            mail_server_response = 'успешно'
+            try_status = 'success'
+            server_response = 'успешно'
 
         except smtplib.SMTPResponseException as error:
             try_status = 'fail'
