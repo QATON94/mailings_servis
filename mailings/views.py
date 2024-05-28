@@ -97,10 +97,22 @@ class ClientUpdateView(LoginRequiredMixin, PermissionRequiredMixin, UpdateView):
         context['clients'] = Client.objects.all()
         return context
 
+    def get_form_class(self):
+        if self.request.user == self.object.user or self.request.user.is_superuser:
+            return ClientForm
+        else:
+            raise Http404('У вас нет прав на редактирование клиентов')
+
 
 class ClientDeleteView(LoginRequiredMixin, PermissionRequiredMixin, DeleteView):
     model = Client
     success_url = reverse_lazy('mailings:client_list')
+
+    def get_form_class(self):
+        if self.request.user == self.object.user or self.request.user.is_superuser:
+            return ClientDeleteView
+        else:
+            raise Http404('У вас нет прав на удаление клиента')
 
 
 class MessagesListView(LoginRequiredMixin, ListView):
@@ -122,10 +134,22 @@ class MessagesUpdateView(LoginRequiredMixin, PermissionRequiredMixin, UpdateView
     form_class = MessagesForm
     success_url = reverse_lazy('mailings:messages_list')
 
+    def get_form_class(self):
+        if self.request.user == self.object.user or self.request.user.is_superuser:
+            return ClientForm
+        else:
+            raise Http404('У вас нет прав на редактирование сообщений')
+
 
 class MessagesDeleteView(LoginRequiredMixin, PermissionRequiredMixin, DeleteView):
     model = Messages
     success_url = reverse_lazy('mailings:messages_list')
+
+    def get_form_class(self):
+        if self.request.user == self.object.user or self.request.user.is_superuser:
+            return ClientDeleteView
+        else:
+            raise Http404('У вас нет прав на удаление сообщений')
 
 
 class ReplyListView(LoginRequiredMixin, ListView):
@@ -139,3 +163,9 @@ class ReplyDetailView(LoginRequiredMixin, DetailView):
 class ReplyDeleteView(LoginRequiredMixin, PermissionRequiredMixin, DeleteView):
     model = Reply
     success_url = reverse_lazy('mailings:reply_list')
+
+    def get_form_class(self):
+        if self.request.user == self.object.user or self.request.user.is_superuser:
+            return ClientDeleteView
+        else:
+            raise Http404('У вас нет прав на удаление логов')

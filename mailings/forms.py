@@ -38,4 +38,6 @@ class MessagesForm(StyleFormMixin, ModelForm):
 class ManagerNewsletterForm(ModelForm):
     class Meta:
         model = Newsletter
-        fields = ['status']
+        fields = ['status', 'client', ]
+
+
