@@ -2,15 +2,24 @@ from django.contrib.auth.mixins import LoginRequiredMixin, PermissionRequiredMix
 from django.http import Http404
 from django.shortcuts import render
 from django.urls import reverse_lazy
-from django.views.generic import CreateView, ListView, DetailView, UpdateView, DeleteView
+from django.views.generic import CreateView, ListView, DetailView, UpdateView, DeleteView, TemplateView
 
+from blog.models import Blog
 from mailings.forms import NewsletterForm, ClientForm, MessagesForm, ManagerNewsletterForm
 from mailings.models import Newsletter, Client, Messages, Reply
 
 
-def base_mil(request):
-    template_name = 'mailings/index.html'
-    return render(request, template_name)
+class HomePageView(TemplateView):
+    template_name = 'mailings/home.html'
+
+    def get_context_data(self, **kwargs):
+        context_data = super().get_context_data(**kwargs)
+        context_data['numbers_mailings'] = Newsletter.objects.all().count()
+        context_data['activ_mailings'] = Newsletter.objects.all().filter(status='запущено').count()
+        context_data['client_mailings'] = Client.objects.all().distinct().count()
+        context_data['random_blog'] = Blog.objects.all().order_by('?')[:3]
+        return context_data
+
 
 
 class NewsletterListView(LoginRequiredMixin, ListView):

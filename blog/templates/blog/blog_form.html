@@ -1,0 +1,26 @@
+{% extends 'mailings/index.html' %}
+
+{% block content %}
+    <div class="container">
+        <div class="row justify-content-start">
+            {% if object %}
+                <h3>Редактирование статьи</h3>
+            {% else %}
+                <h3>Добавление статьи</h3>
+            {% endif %}
+            <div class="col-6">
+                <form method="post" enctype="multipart/form-data">
+                    <div class="card">
+                        <div class="card-body">
+                            {% csrf_token %}
+                            {{ form.as_p }}
+                        </div>
+                        <button type="submit" class="save btn btn-primary">Далее</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+{% endblock %}
+

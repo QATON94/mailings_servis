@@ -1,0 +1,36 @@
+{% extends 'mailings/index.html' %}
+{% load media %}
+
+{% block content %}
+
+    <div class="pricing-header px-3 py-3 pt-md-5 pb-md-4 mx-auto text-center">
+        <h1 class="display-4">{{ blog.title }}</h1>
+        <p class="lead"></p>
+    </div>
+    <div class="container">
+        <div class="row row-cols-1 row-cols text-center">
+            <div class="col-6">
+                <div class="card mb-4 box-shadow">
+                    <div class="card-body">
+                        <h1 class="card-title pricing-card-title">{{ blog.content }}</h1>
+                        <ul class="list-unstyled mt-3 mb-4 text-start m-3">
+                            Статья - {{ blog.content }}
+                        </ul>
+                        <ul class="list-unstyled mt-3 mb-4 text-start m-3">
+                            Количество просмотров - {{ blog.number_views }}
+                        </ul>
+                        <ul class="list-unstyled mt-3 mb-4 text-start m-3">
+                            Дата публикации - {{ blog.date_publications }}
+                        </ul>
+                        <a href="{% url 'blog:blog_list' %}" class="btn btn-lg btn-block btn-outline-primary">Назад</a>
+                    </div>
+                </div>
+            </div>
+            <div class="col-6">
+                <div content="">
+                    <img src="{{ object.image|media_filter }}">
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}

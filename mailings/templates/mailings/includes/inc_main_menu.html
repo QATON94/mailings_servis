@@ -7,13 +7,17 @@
         <div class="collapse navbar-collapse" id="navbarSupportedContent">
             <ul class="navbar-nav me-auto mb-2 mb-lg-0">
                 <li class="nav-item">
+                    <a class="nav-link" href="{% url 'mailings:home' %}">Home</a>
+                </li>
+                <li class="nav-item">
                     <a class="nav-link" href="{% url 'mailings:newsletter_list' %}">Мои рассылки</a>
+                </li>
+                 <li class="nav-item">
+                    <a class="nav-link" href="{% url 'blog:blog_list' %}">Статьи</a>
                 </li>
             </ul>
             <form class="d-flex" role="search">
                 {% if user.is_authenticated %}
-
-
                     <h1 class="navbar-brand">{{ user.email }}</h1>
                     <li><a href="{% url 'users:logout' %}" class="btn btn-primary">Выход</a></li>
 
