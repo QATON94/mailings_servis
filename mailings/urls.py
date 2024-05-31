@@ -1,4 +1,5 @@
 from django.urls import path
+from django.views.decorators.cache import cache_page
 
 from mailings.views import HomePageView, NewsletterCreateView, ClientCreateView, NewsletterListView, \
     NewsletterDetailView, NewsletterUpdateView, MessagesUpdateView, ClientUpdateView, NewsletterDeleteView, \
@@ -8,7 +9,7 @@ from mailings.views import HomePageView, NewsletterCreateView, ClientCreateView,
 app_name = 'mailings'
 
 urlpatterns = [
-    path('', HomePageView.as_view(), name='home'),
+    path('', cache_page(20)(HomePageView.as_view()), name='home'),
 
     path('newsletter_list', NewsletterListView.as_view(), name='newsletter_list'),
     path('newsletter_view/<int:pk>', NewsletterDetailView.as_view(), name='view_newsletter'),

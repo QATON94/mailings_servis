@@ -9,12 +9,14 @@
                 <li class="nav-item">
                     <a class="nav-link" href="{% url 'mailings:home' %}">Home</a>
                 </li>
+                {% if user.is_authenticated %}
                 <li class="nav-item">
                     <a class="nav-link" href="{% url 'mailings:newsletter_list' %}">Мои рассылки</a>
                 </li>
                  <li class="nav-item">
                     <a class="nav-link" href="{% url 'blog:blog_list' %}">Статьи</a>
                 </li>
+                {% endif %}
             </ul>
             <form class="d-flex" role="search">
                 {% if user.is_authenticated %}
