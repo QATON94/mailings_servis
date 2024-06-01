@@ -1,6 +1,8 @@
 import smtplib
 from datetime import datetime, timedelta
 
+import pytz
+from django.conf import settings
 from django.core.mail import send_mail
 from django.db.models import F
 
@@ -9,54 +11,69 @@ from mailings.models import Newsletter, Reply
 
 
 def start_mailing():
+    zone = pytz.timezone(settings.TIME_ZONE)
+    now = datetime.now(zone)
 
-    now = datetime.now()
-    newsletter_list = Newsletter.objects.filter(date_time_start__gte=now)
-    for newsletter in newsletter_list:
-        topic = newsletter.message.topic
-        text = newsletter.message.text
-        newsletter.dispatch_time = newsletter.date_time_start
-        try_status = ''
-        server_response = ''
+    mailings = Newsletter.objects.filter(status='запущено')
 
-        try:
-            send_mail(
-                subject=topic,
-                message=text,
-                from_email=EMAIL_HOST_USER,
-                recipient_list=[client.email for client in newsletter.client.all()],
-                fail_silently=False,
-            )
-            if newsletter.period == 'раз в день':
-                newsletter.dispatch_time = F('dispatch_time') + timedelta(days=1)
-                if datetime.strftime(newsletter.dispatch_time, "%Y-%m-%d %H:%M:%S") <= datetime.strftime(
-                        newsletter.date_time_end, "%Y-%m-%d %H:%M:%S"):
-                    newsletter.status = 'запущено'
-                else:
-                    newsletter.status = 'завершено'
+    for mailing in mailings:
+        print(datetime.strftime(now, "%Y-%m-%d %H:%M:%S"))
+        print('--------------------------')
 
-            if newsletter.period == 'раз в неделю':
-                newsletter.dispatch_time = F('dispatch_time') + timedelta(days=7)
-                if datetime.strftime(newsletter.dispatch_time, "%Y-%m-%d %H:%M:%S") <= datetime.strftime(
-                        newsletter.date_time_end, "%Y-%m-%d %H:%M:%S"):
-                    newsletter.status = 'запущено'
-                else:
-                    newsletter.status = 'завершено'
+        if datetime.strftime(mailing.date_time_start, "%Y-%m-%d %H:%M:%S") <= datetime.strftime(now, "%Y-%m-%d %H:%M:%S"):
+            topic = mailing.message.topic
+            text = mailing.message.text
+            mailing.dispatch_time = mailing.date_time_start
+            try_status = ''
+            server_response = ''
 
-            if newsletter.period == 'раз в месяц':
-                newsletter.dispatch_time = F('dispatch_time') + timedelta(days=30)
-                if datetime.strftime(newsletter.dispatch_time, "%Y-%m-%d %H:%M:%S") <= datetime.strftime(
-                        newsletter.date_time_end, "%Y-%m-%d %H:%M:%S"):
-                    newsletter.status = 'запущено'
-                else:
-                    newsletter.status = 'завершено'
+            try:
+                send_mail(
+                    subject=topic,
+                    message=text,
+                    from_email=EMAIL_HOST_USER,
+                    recipient_list=[client.email for client in mailing.client.all()],
+                    fail_silently=False,
+                )
+                if mailing.period == 'раз в день':
+                    mailing.dispatch_time = mailing.dispatch_time + timedelta(days=1)
+                    print(mailing.dispatch_time)
+                    print('--------------------------')
+                    if datetime.strftime(mailing.dispatch_time, "%Y-%m-%d %H:%M:%S") <= datetime.strftime(
+                            mailing.date_time_end, "%Y-%m-%d %H:%M:%S"):
+                        mailing.status = 'запущено'
+                    else:
+                        mailing.status = 'завершено'
 
-            try_status = 'success'
-            server_response = 'успешно'
+                if mailing.period == 'раз в неделю':
+                    mailing.dispatch_time = mailing.dispatch_time + timedelta(days=7)
+                    if datetime.strftime(mailing.dispatch_time, "%Y-%m-%d %H:%M:%S") <= datetime.strftime(
+                            mailing.date_time_end, "%Y-%m-%d %H:%M:%S"):
+                        mailing.status = 'запущено'
+                    else:
+                        mailing.status = 'завершено'
 
-        except smtplib.SMTPResponseException as error:
-            try_status = 'fail'
-            server_response = str(error)
+                if mailing.period == 'раз в месяц':
+                    mailing.dispatch_time = mailing.dispatch_time + timedelta(days=30)
+                    if datetime.strftime(mailing.dispatch_time, "%Y-%m-%d %H:%M:%S") <= datetime.strftime(
+                            mailing.date_time_end, "%Y-%m-%d %H:%M:%S"):
+                        mailing.status = 'запущено'
+                    else:
+                        mailing.status = 'завершено'
 
-        finally:
-            Reply.objects.create(last_try_datatime=now, status=try_status, mail_server_response=server_response)
+                mailing.save()
+                try_status = 'success'
+                server_response = 'успешно'
+
+            except smtplib.SMTPResponseException as error:
+                try_status = 'fail'
+                server_response = str(error)
+
+            finally:
+                reply = Reply.objects.create(last_try_datatime=now, status=try_status,
+                                             mail_server_response=server_response)
+                reply.save()
+
+        else:
+            mailing.status = 'завершено'
+            mailing.save()
