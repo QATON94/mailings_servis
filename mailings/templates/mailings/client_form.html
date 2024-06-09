@@ -1,0 +1,39 @@
+{% extends 'mailings/index.html' %}
+
+{% block content %}
+    <div class="container">
+        <div class="row justify-content-start">
+            {% if object %}
+                <h3>Редактирование клиента</h3>
+            {% else %}
+                <h3>Добавление клиента</h3>
+            {% endif %}
+            <div class="col-6">
+                <form method="post">
+                    <div class="card">
+                        <div class="card-body">
+                            {% csrf_token %}
+                            {{ form.as_p }}
+                        </div>
+                        <button type="submit" class="save btn btn-primary">Далее</button>
+                    </div>
+                </form>
+            </div>
+
+
+            <div class="col-6">
+                <h3>Список клиентов</h3>
+                <table class="table">
+                    {% for object in clients %}
+                        <tbody>
+                        <tr>
+                            <th scope="col">{{ object.email }}</th>
+                        </tr>
+                    {% endfor %}
+                </table>
+            </div>
+        </div>
+    </div>
+
+{% endblock %}
+
